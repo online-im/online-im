@@ -1,0 +1,20 @@
+/*example*/
+syntax = "proto3";
+
+option go_package = "protobuf/dubbo3";
+package protobuf;
+
+service IMServiceProvider {
+  rpc PublishMessage (PublishMessageRequest) returns (PublishMessageResponse) {}
+}
+
+message PublishMessageRequest {
+  string fromID = 1;
+  string toID = 2;
+  string data = 3;
+}
+
+message PublishMessageResponse {
+  uint32 code = 1;
+  string message = 2;
+}

@@ -1,0 +1,16 @@
+org_name: ide
+server_name: im-controller
+
+log :
+  "console-log":
+    log_type: console
+    level: debug
+
+registry:
+  "registryKey":
+    service: k8s
+
+redis:
+  "redisKey":
+    host: localhost # todo k8s disc
+    port: 2181

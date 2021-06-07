@@ -1,0 +1,25 @@
+org_name: go-online
+server_name: im-instance
+log :
+  "console-log":
+    log_type: console
+    level: debug
+
+redis:
+  "redisKey":
+    host: localhost # todo k8s disc? hhh
+    port: 6379
+
+provider:
+  "OnlineIMGRPCProviderName":
+    protocol: grpc
+    service_id: im-instance
+    port: 8080
+  "OnlineIMHTTPProviderName":
+    protocol: http
+    service_id: GoOnline-IDE-gloryService
+    port: 8081
+consumer:
+  "OnlineIMGRPCClientName":
+    service_id: im-instance
+    protocol: grpc
