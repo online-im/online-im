@@ -9,8 +9,13 @@ log :
 registry:
   "registryKey":
     service: k8s
-
 redis:
   "redisKey":
-    host: localhost # todo k8s disc
-    port: 2181
+    host: localhost
+    port: 6379
+
+provider:
+  "OnlineIMGatewayHTTPProviderName":
+    service_id: im-gateway
+    protocol: http
+    port: 8086

@@ -53,6 +53,10 @@ func (imrc *IMRedisClient) SetUserID2instanceIP(uid, instanceIP string) {
 	imrc.rawClient.Set(uid, instanceIP, 0)
 }
 
+func (imrc *IMRedisClient) DelUserID2instanceIP(uid string) {
+	imrc.rawClient.Del(uid)
+}
+
 func (imrc *IMRedisClient) ADDUserID2RoomID(uid, roomID string) error {
 	userList, err := imrc.GetRoomID2userIDs(roomID)
 	if err != nil {
@@ -69,18 +73,33 @@ func (imrc *IMRedisClient) ADDUserID2RoomID(uid, roomID string) error {
 	return nil
 }
 
-func (imrc *IMRedisClient) ADDInstance(instanceIP string) error {
-	val, err := imrc.rawClient.Get(constant.IMInstanceIPsKey).Result()
+func (imrc *IMRedisClient) ADDInstance(instanceAddr string) error {
+	res, err := imrc.rawClient.Exists(constant.IMInstanceIPsKey).Result()
 	if err != nil {
 		return err
 	}
-	ipList := strings.Split(val, "|")
-	for _, v := range ipList {
-		if v == instanceIP {
-			return nil
+	ipList := make([]string, 0)
+	if res != 0 {
+		val, err := imrc.rawClient.Get(constant.IMInstanceIPsKey).Result()
+		if err != nil {
+			return err
+		}
+		ipList = strings.Split(val, "|")
+		for _, v := range ipList {
+			if v == instanceAddr {
+				return nil
+			}
 		}
 	}
-	ipList = append(ipList, instanceIP)
+	ipList = append(ipList, instanceAddr)
 	imrc.rawClient.Set(constant.IMInstanceIPsKey, strings.Join(ipList, "|"), 0)
 	return nil
+}
+
+func (imrc *IMRedisClient) GetInstances() ([]string, error) {
+	val, err := imrc.rawClient.Get(constant.IMInstanceIPsKey).Result()
+	if err != nil {
+		return nil, err
+	}
+	return strings.Split(val, "|"), nil
 }

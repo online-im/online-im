@@ -10,15 +10,18 @@ redis:
     host: localhost # todo k8s disc? hhh
     port: 6379
 
+registry:
+  "registryKey":
+    service: k8s
+
 provider:
   "OnlineIMGRPCProviderName":
     protocol: grpc
     service_id: im-instance
-    port: 8080
+    port: 8084
   "OnlineIMHTTPProviderName":
     protocol: http
-    service_id: GoOnline-IDE-gloryService
-    port: 8081
+    port: 8085
 consumer:
   "OnlineIMGRPCClientName":
     service_id: im-instance

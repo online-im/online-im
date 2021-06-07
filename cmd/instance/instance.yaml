@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: online-im-instance
+  namespace: glory
+  labels:
+    app: online-im-instance
+spec:
+  type: NodePort
+  ports:
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: grpc
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: online-im-instance
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: online-im-instance-image-deployment
+  namespace: glory
+spec:
+  selector:
+    matchLabels:
+      app: online-im-instance
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: online-im-instance
+    spec:
+      containers:
+        - name: online-im-instance
+          image: online-im-instance-image  #本地私有镜像库的镜像名称+版本
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+            - containerPort: 8081
+          env:
+            - name: NAMESPACE # 获取namespace
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: HOSTNAME # 获取pod名称
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name

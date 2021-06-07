@@ -7,6 +7,7 @@ const Publish2Room = PublishMessageType(2)
 const Publish2Global = PublishMessageType(3)
 
 const GRPCProviderName = "OnlineIMGRPCProviderName"
+const GRPCProviderServiceID = "im-instance"
 
 const GRPCClientName = "OnlineIMGRPCClientName"
 
@@ -16,3 +17,6 @@ const RegistryKey = "registryKey"
 const RedisKey = "redisKey"
 
 const IMInstanceIPsKey = "instance-ips"
+
+// gateway
+const HTTPGatewayProviderName = "OnlineIMGatewayHTTPProviderName"
