@@ -1,7 +1,7 @@
 package publisher
 
 import (
-	ggrpc "git.go-online.org.cn/Glory/glory/grpc"
+	ggrpc "github.com/glory-go/glory/grpc"
 	"github.com/goonline/online-im/internal/constant"
 	pb "github.com/goonline/online-im/internal/instance/api"
 )

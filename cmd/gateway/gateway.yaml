@@ -18,7 +18,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: online-im-instance-image-deployment
+  name: online-im-gateway-image-deployment
   namespace: glory
 spec:
   selector:

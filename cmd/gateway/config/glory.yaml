@@ -1,5 +1,5 @@
 org_name: ide
-server_name: im-controller
+server_name: im-gateway
 
 log :
   "console-log":
@@ -17,5 +17,6 @@ redis:
 provider:
   "OnlineIMGatewayHTTPProviderName":
     service_id: im-gateway
+    registry_key: registryKey
     protocol: http
     port: 8086

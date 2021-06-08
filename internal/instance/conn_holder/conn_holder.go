@@ -1,7 +1,7 @@
 package conn_holder
 
 import (
-	"git.go-online.org.cn/Glory/glory/log"
+	"github.com/glory-go/glory/log"
 	"github.com/goonline/online-im/pkg/message"
 	"github.com/gorilla/websocket"
 	perrors "github.com/pkg/errors"

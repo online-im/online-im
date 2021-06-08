@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"git.go-online.org.cn/Glory/glory/config"
-	ghttp "git.go-online.org.cn/Glory/glory/http"
-	"git.go-online.org.cn/Glory/glory/log"
+	"github.com/glory-go/glory/config"
+	ghttp "github.com/glory-go/glory/http"
+	"github.com/glory-go/glory/log"
 	gostNet "github.com/dubbogo/gost/net"
 	"github.com/goonline/online-im/internal/constant"
 	"github.com/goonline/online-im/internal/instance/common"

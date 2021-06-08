@@ -1,8 +1,8 @@
 package main
 
 import (
-	gConfig "git.go-online.org.cn/Glory/glory/config"
-	"git.go-online.org.cn/Glory/glory/glory"
+	gConfig "github.com/glory-go/glory/config"
+	"github.com/glory-go/glory/glory"
 	"github.com/goonline/online-im/internal/constant"
 	"github.com/goonline/online-im/internal/instance/config"
 	"github.com/goonline/online-im/internal/instance/http"
@@ -12,7 +12,7 @@ import (
 	"github.com/goonline/online-im/internal/redis_client"
 	"strconv"
 
-	_ "git.go-online.org.cn/Glory/glory/registry/k8s"
+	_ "github.com/glory-go/glory/registry/k8s"
 )
 
 func main() {

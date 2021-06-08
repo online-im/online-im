@@ -1,8 +1,8 @@
 package http
 
 import (
-	"git.go-online.org.cn/Glory/glory/server"
-	"git.go-online.org.cn/Glory/glory/service"
+	"github.com/glory-go/glory/server"
+	"github.com/glory-go/glory/service"
 	"github.com/goonline/online-im/internal/constant"
 	"github.com/goonline/online-im/internal/instance/config"
 	"github.com/goonline/online-im/internal/instance/http/handler"

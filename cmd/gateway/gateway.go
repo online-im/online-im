@@ -1,12 +1,16 @@
 package main
 
 import (
-	"git.go-online.org.cn/Glory/glory/glory"
-	_ "git.go-online.org.cn/Glory/glory/registry/k8s"
+	"github.com/glory-go/glory/glory"
+	_ "github.com/glory-go/glory/registry/k8s"
+	"github.com/goonline/online-im/internal/gateway/config"
 	"github.com/goonline/online-im/internal/gateway/http"
 )
 
 func main() {
+
+	config.GlobalConfig.InstanceDiscType = "k8s"
+
 	gloryServer := glory.NewServer()
 
 	// start httpHandler

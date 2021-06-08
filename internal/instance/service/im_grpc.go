@@ -1,12 +1,12 @@
 package service
 
 import (
-	"git.go-online.org.cn/Glory/glory/service"
+	"github.com/glory-go/glory/service"
 	"github.com/goonline/online-im/internal/constant"
 	pb "github.com/goonline/online-im/internal/instance/api"
 	"github.com/goonline/online-im/internal/instance/config"
 
-	"git.go-online.org.cn/Glory/glory/server"
+	"github.com/glory-go/glory/server"
 )
 
 type IMGRPCService struct {

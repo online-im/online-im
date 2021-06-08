@@ -1,10 +1,11 @@
 package instance_selector
 
 import (
-	"git.go-online.org.cn/Glory/glory/common"
-	"git.go-online.org.cn/Glory/glory/config"
-	"git.go-online.org.cn/Glory/glory/log"
-	"git.go-online.org.cn/Glory/glory/plugin"
+	"fmt"
+	"github.com/glory-go/glory/common"
+	"github.com/glory-go/glory/config"
+	"github.com/glory-go/glory/log"
+	"github.com/glory-go/glory/plugin"
 	"github.com/goonline/online-im/internal/constant"
 	_ "github.com/goonline/online-im/internal/redis_client"
 	perrors "github.com/pkg/errors"
@@ -12,12 +13,7 @@ import (
 	"sync"
 )
 
-var once *sync.Once
 var instanceSelector *InstanceSelector
-
-func init() {
-	once = &sync.Once{}
-}
 
 type InstanceSelector struct {
 	localCache map[string]bool
@@ -26,22 +22,23 @@ type InstanceSelector struct {
 	mapLock    *sync.RWMutex
 }
 
+func init() {
+	instanceSelector = &InstanceSelector{
+		localCache: make(map[string]bool),
+		mapLock:    &sync.RWMutex{},
+		counter:    atomic.NewUint32(0),
+	}
+	go instanceSelector.Watch()
+}
+
 func GetInstanceSelector() *InstanceSelector {
-	once.Do(func() {
-		instanceSelector = &InstanceSelector{
-			localCache: make(map[string]bool),
-			mapLock:    &sync.RWMutex{},
-			counter:    atomic.NewUint32(0),
-		}
-		go instanceSelector.Watch()
-	})
 	return instanceSelector
 }
 
 // Watch is run in single gr
 func (i *InstanceSelector) Watch() {
 	reg := plugin.GetRegistry(config.GlobalServerConf.RegistryConfig[constant.RegistryKey])
-	eventCh, err := reg.Subscribe(constant.GRPCProviderServiceID)
+	eventCh, err := reg.Subscribe(constant.IMInstanceServiceID)
 	if err != nil {
 		panic(err)
 	}
@@ -57,6 +54,7 @@ func (i *InstanceSelector) Watch() {
 			i.localCache[addr] = true
 			i.length++
 			log.Info("InstanceSelector start working")
+			fmt.Println("InstanceSelector start working")
 		case common.RegistryDeleteEvent:
 			delete(i.localCache, addr)
 			i.length--

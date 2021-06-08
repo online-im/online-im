@@ -7,7 +7,7 @@ const Publish2Room = PublishMessageType(2)
 const Publish2Global = PublishMessageType(3)
 
 const GRPCProviderName = "OnlineIMGRPCProviderName"
-const GRPCProviderServiceID = "im-instance"
+const IMInstanceServiceID = "im-instance"
 
 const GRPCClientName = "OnlineIMGRPCClientName"
 
