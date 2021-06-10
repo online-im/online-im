@@ -57,8 +57,39 @@ func (imrc *IMRedisClient) DelUserID2instanceIP(uid string) {
 	imrc.rawClient.Del(uid)
 }
 
-func (imrc *IMRedisClient) ADDUserID2RoomID(uid, roomID string) error {
-	userList, err := imrc.GetRoomID2userIDs(roomID)
+func (imrc *IMRedisClient) CreateGroup(uid, groupID string, userIDList []string) error {
+	newUserList := append(userIDList, uid)
+	if err := imrc.rawClient.Set(groupID, strings.Join(newUserList, "|"), 0).Err(); err != nil {
+		log.Error("CreateGroup Set failed with err = ", err)
+		return err
+	}
+	return nil
+}
+
+func (imrc *IMRedisClient) DeleteGroup(groupID string) error {
+	err, ok := imrc.exist(groupID)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return nil
+	}
+	if err := imrc.rawClient.Del(groupID).Err(); err != nil {
+		log.Error("ADDUserID2RoomID Del roomid failed with err = ", err)
+		return err
+	}
+	return nil
+}
+
+func (imrc *IMRedisClient) ADDUserID2Group(uid, groupID string) error {
+	err, ok := imrc.exist(groupID)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return nil
+	}
+	userList, err := imrc.GetRoomID2userIDs(groupID)
 	if err != nil {
 		log.Error("ADDUserID2RoomID failed with err = ", err)
 		return err
@@ -69,7 +100,47 @@ func (imrc *IMRedisClient) ADDUserID2RoomID(uid, roomID string) error {
 		}
 	}
 	userList = append(userList, uid)
-	imrc.rawClient.Set(roomID, strings.Join(userList, "|"), 0)
+	imrc.rawClient.Set(groupID, strings.Join(userList, "|"), 0)
+	return nil
+}
+
+func (imrc *IMRedisClient) exist(key string) (error, bool) {
+	res, err := imrc.rawClient.Exists(key).Result()
+	if err != nil {
+		return err, false
+	}
+	if res == 0 {
+		return nil, false
+	}
+	return nil, true
+}
+
+func (imrc *IMRedisClient) RemoveUserIDFromGroup(uid, groupID string) error {
+	err, ok := imrc.exist(groupID)
+	if err != nil {
+		return err
+	}
+	if !ok {
+		return nil
+	}
+	userList, err := imrc.GetRoomID2userIDs(groupID)
+	if err != nil {
+		log.Error("ADDUserID2RoomID failed with err = ", err)
+		return err
+	}
+	newUserList := make([]string, 0)
+	for _, v := range userList {
+		if v != uid {
+			newUserList = append(newUserList, v)
+		}
+	}
+	if len(newUserList) == 0 {
+		return imrc.DeleteGroup(groupID)
+	}
+	if err := imrc.rawClient.Set(groupID, strings.Join(newUserList, "|"), 0).Err(); err != nil {
+		log.Error("ADDUserID2RoomID Set failed with err = ", err)
+		return err
+	}
 	return nil
 }
 

@@ -31,17 +31,15 @@ func NewPublisherInstance(conf *config.Config) error {
 }
 
 func (p *Publisher) Publish(msg *message.CoreMessagePayload) error {
-	//var err error
-	//switch msg.PublishType {
-	//case constant.Publish2User:
-	//	err = p.publish2User(msg)
-	//case constant.Publish2Room:
-	//	err = p.publish2Room(msg)
-	//case constant.Publish2Global:
-	//	//todo
-	//}
-	return p.publish2User(msg)
-	//return err
+	var err error
+	switch msg.PublishType {
+	case constant.Publish2User:
+		err = p.publish2User(msg)
+	case constant.Publish2Group:
+		err = p.publish2Group(msg)
+		//todo extension
+	}
+	return err
 }
 
 func (p *Publisher) publish2User(msg *message.CoreMessagePayload) error {
@@ -66,22 +64,23 @@ func (p *Publisher) publish2User(msg *message.CoreMessagePayload) error {
 	return nil
 }
 
-func (p *Publisher) publish2Room(msg *message.CoreMessagePayload) error {
-	//userIDs, err := p.cache.GetRoomID2UserIDs(msg.TargetID)
-	//if err != nil {
-	//	return err
-	//}
+func (p *Publisher) publish2Group(msg *message.CoreMessagePayload) error {
+	userIDs, err := p.cache.GetRoomID2UserIDs(msg.TargetID)
+	if err != nil {
+		return err
+	}
 
-	//for _, v := range userIDs {
-	//	if err := p.publish2User(msg); err != nil {
-	//		return err
-	//	}
-	//}
-
-	return nil
-}
-
-func (p *Publisher) publish2Global(msg *message.CoreMessagePayload) error {
-	// todo
+	for _, v := range userIDs {
+		go func(v string, msg message.CoreMessagePayload) {
+			if err := p.publish2User(&message.CoreMessagePayload{
+				Data:        msg.Data,
+				FromID:      msg.FromID,
+				TargetID:    v,
+				PublishType: msg.PublishType,
+			}); err != nil {
+				log.Errorf("error publish to group err = %s", err)
+			}
+		}(v, *msg)
+	}
 	return nil
 }

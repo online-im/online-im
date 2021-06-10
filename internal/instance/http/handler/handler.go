@@ -9,11 +9,11 @@ import (
 	"github.com/online-im/online-im/internal/constant"
 	"github.com/online-im/online-im/internal/instance/conn_holder"
 	"github.com/online-im/online-im/internal/instance/ierror"
+	"github.com/online-im/online-im/internal/instance/manager"
 	"github.com/online-im/online-im/internal/instance/publisher"
 	"github.com/online-im/online-im/internal/redis_client"
 	pconst "github.com/online-im/online-im/pkg/constant"
 	"github.com/online-im/online-im/pkg/message"
-	"github.com/pkg/errors"
 	"strconv"
 )
 
@@ -55,15 +55,25 @@ func OnlineHandler(c *ghttp.GRegisterWSController) {
 			log.Errorf("Read json err = %s", err)
 			return
 		}
-		if msg.Type != pconst.CoreMessageType_Message {
-			ierror.SendError(ierror.NewError(pconst.CoreErrorCode_CoreMessageTypeUnsupported, errors.New("unsupported msgType = "+strconv.Itoa(int(msg.Type)))), fromID)
-			continue
-		}
 
-		// publish the given core message to other users
-		if err := publisher.IMPublisher.Publish(&msg.Payload); err != nil {
-			ierror.SendError(err, fromID)
+		switch msg.Type {
+		case pconst.CoreMessageType_Message:
+			// publish the given core message to other users
+			if err := publisher.IMPublisher.Publish(&msg.MessagePayload); err != nil {
+				ierror.SendError(err, fromID)
+			}
+		case pconst.CoreMessageType_Close:
+			return
+		case pconst.CoreMessageType_Manage:
+			if err := manager.IMManager.Manage(&msg.ManagePayload); err != nil {
+				ierror.SendError(err, fromID)
+			}
 		}
+		//if msg.Type != pconst.CoreMessageType_Message {
+		//	ierror.SendError(ierror.NewError(pconst.CoreErrorCode_CoreMessageTypeUnsupported, errors.New("unsupported msgType = "+strconv.Itoa(int(msg.Type)))), fromID)
+		//	continue
+		//}
+
 	}
 
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/online-im/online-im/internal/instance/config"
 	"github.com/online-im/online-im/internal/instance/http"
 	"github.com/online-im/online-im/internal/instance/http/handler"
+	"github.com/online-im/online-im/internal/instance/manager"
 	"github.com/online-im/online-im/internal/instance/publisher"
 	"github.com/online-im/online-im/internal/instance/service"
 	"github.com/online-im/online-im/internal/redis_client"
@@ -41,6 +42,10 @@ func main() {
 	}
 
 	if err := publisher.NewPublisherInstance(imConfig); err != nil {
+		panic(err)
+	}
+
+	if err := manager.NewManagerInstance(imConfig); err != nil {
 		panic(err)
 	}
 

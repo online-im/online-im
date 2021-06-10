@@ -25,13 +25,14 @@ func NewImCoreClient(targetAddr, userID string) (*IMCoreClient, error) {
 	}, nil
 }
 
-func (i *IMCoreClient) SendMessage(data []byte, targetID string) error {
+func (i *IMCoreClient) SendMessage(data []byte, targetID string, pubType constant.PublishType) error {
 	cmsg := message.CoreMessage{
 		Type: constant.CoreMessageType_Message,
-		Payload: message.CoreMessagePayload{
-			Data:     data,
-			FromID:   i.userID,
-			TargetID: targetID,
+		MessagePayload: message.CoreMessagePayload{
+			Data:        data,
+			FromID:      i.userID,
+			TargetID:    targetID,
+			PublishType: pubType,
 		},
 	}
 	return websocket.JSON.Send(i.ws, cmsg)
@@ -46,5 +47,57 @@ func (i *IMCoreClient) RecvMessage() (*message.CoreMessage, error) {
 }
 
 func (i *IMCoreClient) Close() {
+	cmsg := message.CoreMessage{
+		Type: constant.CoreMessageType_Close,
+	}
+	websocket.JSON.Send(i.ws, cmsg)
 	i.ws.Close()
+}
+
+func (i *IMCoreClient) CreateGroup(userID, groupID string, users []string) error {
+	cmsg := message.CoreMessage{
+		Type: constant.CoreMessageType_Manage,
+		ManagePayload: message.ManagePayload{
+			ManageType: constant.ManageType_CreateGroup,
+			User:       userID,
+			GroupID:    groupID,
+			Users:      users,
+		},
+	}
+	return websocket.JSON.Send(i.ws, cmsg)
+}
+
+func (i *IMCoreClient) DeleteGroup(groupID string) error {
+	cmsg := message.CoreMessage{
+		Type: constant.CoreMessageType_Manage,
+		ManagePayload: message.ManagePayload{
+			ManageType: constant.ManageType_DeleteGroup,
+			User:       groupID,
+		},
+	}
+	return websocket.JSON.Send(i.ws, cmsg)
+}
+
+func (i *IMCoreClient) AddUserToGroup(userID, groupID string) error {
+	cmsg := message.CoreMessage{
+		Type: constant.CoreMessageType_Manage,
+		ManagePayload: message.ManagePayload{
+			ManageType: constant.ManageType_AddUserToGroup,
+			GroupID:    groupID,
+			User:       userID,
+		},
+	}
+	return websocket.JSON.Send(i.ws, cmsg)
+}
+
+func (i *IMCoreClient) RemoveUserFromGroup(userID, groupID string) error {
+	cmsg := message.CoreMessage{
+		Type: constant.CoreMessageType_Manage,
+		ManagePayload: message.ManagePayload{
+			ManageType: constant.ManageType_RemoveUserFromGroup,
+			User:       userID,
+			GroupID:    groupID,
+		},
+	}
+	return websocket.JSON.Send(i.ws, cmsg)
 }

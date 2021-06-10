@@ -41,7 +41,7 @@ func (ws *WSConnHolder) Del(userID string) {
 func (ws *WSConnHolder) SendMessageWithData(fromID, targetID string, data []byte) error {
 	msg := message.CoreMessage{
 		Type: constant.CoreMessageType_Message,
-		Payload: message.CoreMessagePayload{
+		MessagePayload: message.CoreMessagePayload{
 			Data:     data,
 			FromID:   fromID,
 			TargetID: targetID,
