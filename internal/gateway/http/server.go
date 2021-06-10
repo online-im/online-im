@@ -3,7 +3,7 @@ package http
 import (
 	"github.com/glory-go/glory/server"
 	"github.com/glory-go/glory/service"
-	"github.com/goonline/online-im/internal/constant"
+	"github.com/online-im/online-im/internal/constant"
 )
 
 type IMGatewayHTTPService struct {

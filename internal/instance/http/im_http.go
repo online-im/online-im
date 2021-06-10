@@ -3,9 +3,9 @@ package http
 import (
 	"github.com/glory-go/glory/server"
 	"github.com/glory-go/glory/service"
-	"github.com/goonline/online-im/internal/constant"
-	"github.com/goonline/online-im/internal/instance/config"
-	"github.com/goonline/online-im/internal/instance/http/handler"
+	"github.com/online-im/online-im/internal/constant"
+	"github.com/online-im/online-im/internal/instance/config"
+	"github.com/online-im/online-im/internal/instance/http/handler"
 )
 
 type IMHTTPService struct {

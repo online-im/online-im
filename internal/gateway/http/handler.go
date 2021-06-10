@@ -2,9 +2,9 @@ package http
 
 import (
 	ghttp "github.com/glory-go/glory/http"
-	gatewayConfig "github.com/goonline/online-im/internal/gateway/config"
-	"github.com/goonline/online-im/internal/gateway/instance_selector"
-	"github.com/goonline/online-im/internal/redis_client"
+	gatewayConfig "github.com/online-im/online-im/internal/gateway/config"
+	"github.com/online-im/online-im/internal/gateway/instance_selector"
+	"github.com/online-im/online-im/internal/redis_client"
 )
 
 import (

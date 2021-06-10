@@ -1,8 +1,10 @@
 package publisher
 
 import (
-	"github.com/goonline/online-im/internal/instance/config"
-	"github.com/goonline/online-im/internal/redis_client"
+	"github.com/online-im/online-im/internal/instance/config"
+	"github.com/online-im/online-im/internal/instance/ierror"
+	"github.com/online-im/online-im/internal/redis_client"
+	"github.com/online-im/online-im/pkg/constant"
 )
 
 type Cache struct {
@@ -20,11 +22,12 @@ func NewCache(conf *config.Config) (*Cache, error) {
 }
 
 func (c *Cache) GetUserID2InstanceIP(userID string) (string, error) {
-	iIP, ok := c.uID2iIP[userID]
-	if !ok {
+	iIP, _ := c.uID2iIP[userID]
+	// todo using subscribe cache
+	if true {
 		iIP, err := c.imRedisClient.GetUserID2instanceIP(userID)
 		if err != nil {
-			return "", err
+			return "", ierror.NewError(constant.CoreErrorCode_UserOffLine, err)
 		}
 		c.uID2iIP[userID] = iIP
 		return iIP, nil

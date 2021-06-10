@@ -4,7 +4,7 @@ import (
 	"github.com/glory-go/glory/log"
 	gloryRedis "github.com/glory-go/glory/redis"
 	"github.com/go-redis/redis"
-	"github.com/goonline/online-im/internal/constant"
+	"github.com/online-im/online-im/internal/constant"
 	"strings"
 	"sync"
 )

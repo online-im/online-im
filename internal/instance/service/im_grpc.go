@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/glory-go/glory/service"
-	"github.com/goonline/online-im/internal/constant"
-	pb "github.com/goonline/online-im/internal/instance/api"
-	"github.com/goonline/online-im/internal/instance/config"
+	"github.com/online-im/online-im/internal/constant"
+	pb "github.com/online-im/online-im/internal/instance/api"
+	"github.com/online-im/online-im/internal/instance/config"
 
 	"github.com/glory-go/glory/server"
 )

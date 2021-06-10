@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/glory-go/glory/glory"
 	_ "github.com/glory-go/glory/registry/k8s"
-	"github.com/goonline/online-im/internal/gateway/config"
-	"github.com/goonline/online-im/internal/gateway/http"
+	"github.com/online-im/online-im/internal/gateway/config"
+	"github.com/online-im/online-im/internal/gateway/http"
 )
 
 func main() {
