@@ -6,11 +6,12 @@ import (
 )
 
 type Dal interface {
-	GetMessageWithID(db *gorm.DB, msgID int64) (*model.ChatMsg, error)
-	GetOwnReceiveMessage(db *gorm.DB, userID int64, fromMsgID int64, limit int) ([]model.UserMsg, error)
-	// AddMessage add a chat message
-	AddMessage(db *gorm.DB, msg *model.ChatMsg) error
-	// SendMessageTo store the message to be sent to the user
-	SendMessageTo(db *gorm.DB, sendInfo *model.UserMsg) error
+	GetMsgID(db *gorm.DB, receiver int64) (int64, error)
+	BatchGetMessageContent(db *gorm.DB, chatMsgIDs []int64) ([]model.ChatMsg, error)
+	GetMessageContent(db *gorm.DB, chatID, from int64, limit int) ([]model.ChatMsg, error)
+	GetMessages(db *gorm.DB, receiver, start int64, limit int) ([]model.UserMsg, error)
+	// AddMessageContent add a chat message
+	AddMessageContent(db *gorm.DB, msg *model.ChatMsg) (int64, error)
+	// AddMessage store the message to be sent to the user
+	AddMessage(db *gorm.DB, msg *model.UserMsg) error
 }
-

@@ -6,13 +6,14 @@ const (
 	UserMsgTableName = "user_msg"
 )
 
-// UserMsg stores relationship between user and message
+// UserMsg stores relationship between user(not include chatroom) and message
 type UserMsg struct {
 	gorm.Model
-	UserID int64 `gorm:"column:user_id;not null"`
-	MsgID  int64 `gorm:"column:msg_id;not null"`
+	Receiver  int64 `gorm:"column:receiver;not null"`
+	MsgID     int64 `gorm:"column:msg_id;not null"`
+	ChatMsgID int64 `gorm:"column:chat_msg_id;not null"`
 }
 
-func (UserMsg) TableName()string {
+func (UserMsg) TableName() string {
 	return UserMsgTableName
 }
