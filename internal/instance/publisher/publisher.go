@@ -2,10 +2,14 @@ package publisher
 
 import (
 	"context"
+	"strconv"
+
 	"github.com/glory-go/glory/log"
 	pb "github.com/online-im/online-im/internal/instance/api"
 	"github.com/online-im/online-im/internal/instance/config"
 	"github.com/online-im/online-im/internal/instance/ierror"
+	"github.com/online-im/online-im/internal/storage/dal"
+	"github.com/online-im/online-im/internal/storage/service"
 	"github.com/online-im/online-im/pkg/constant"
 	"github.com/online-im/online-im/pkg/message"
 	perrors "github.com/pkg/errors"
@@ -14,8 +18,9 @@ import (
 var IMPublisher *Publisher
 
 type Publisher struct {
-	cache      *Cache
-	grpcClient *IMGRPCClientCache
+	cache          *Cache
+	grpcClient     *IMGRPCClientCache
+	storageService service.Service
 }
 
 func NewPublisherInstance(conf *config.Config) error {
@@ -23,15 +28,30 @@ func NewPublisherInstance(conf *config.Config) error {
 	if err != nil {
 		return err
 	}
+	dalClient := dal.NewMysqlDal()
 	IMPublisher = &Publisher{
-		cache:      cache,
-		grpcClient: NewIMGRPCClientCache(),
+		cache:          cache,
+		grpcClient:     NewIMGRPCClientCache(),
+		storageService: service.NewService(dalClient),
 	}
 	return nil
 }
 
-func (p *Publisher) Publish(msg *message.CoreMessagePayload) error {
-	var err error
+func (p *Publisher) Publish(ctx context.Context, msg *message.CoreMessagePayload) error {
+	// save message before send
+	fromID, err := strconv.ParseInt(msg.FromID, 10, 64)
+	if err != nil {
+		return constant.CoreErrorCode_ParamError
+	}
+	targetID, err := strconv.ParseInt(msg.TargetID, 10, 64)
+	if err != nil {
+		return constant.CoreErrorCode_ParamError
+	}
+	_, err = p.storageService.SendMsgTo(ctx, fromID, targetID, string(msg.Data), msg.PublishType)
+	if err != nil {
+		return err
+	}
+	// publish message to user
 	switch msg.PublishType {
 	case constant.Publish2User:
 		err = p.publish2User(msg)

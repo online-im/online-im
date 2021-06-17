@@ -11,6 +11,10 @@ const (
 
 type mysqlDal struct{}
 
+func NewMysqlDal() Dal {
+	return &mysqlDal{}
+}
+
 func (d *mysqlDal) GetMsgID(db *gorm.DB, receiver int64) (int64, error) {
 	var msgID int64
 	if err := db.Transaction(func(tx *gorm.DB) error {

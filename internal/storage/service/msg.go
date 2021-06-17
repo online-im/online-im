@@ -15,7 +15,13 @@ type serviceStruct struct {
 	dalClient dal.Dal
 }
 
-func (s *serviceStruct) SendMsgTo(ctx context.Context, from, to int64, content string, chatType model.RoomType) (int64, error) {
+func NewService(dalClient dal.Dal) Service {
+	return &serviceStruct{
+		dalClient: dalClient,
+	}
+}
+
+func (s *serviceStruct) SendMsgTo(ctx context.Context, from, to int64, content string, chatType constant.PublishType) (int64, error) {
 	funcName := "SendMsgTo"
 	// store message content first(no tx)
 	msgContentID, err := s.dalClient.AddMessageContent(dal.DB, &model.ChatMsg{
@@ -33,10 +39,10 @@ func (s *serviceStruct) SendMsgTo(ctx context.Context, from, to int64, content s
 	if err := dal.DB.Transaction(func(tx *gorm.DB) error {
 		userIDs := make([]int64, 0)
 		switch chatType {
-		case model.RoomTypeUser:
+		case constant.Publish2User:
 			// if receiver is user, store to given user
 			userIDs = append(userIDs, to)
-		case model.RoomTypeChatRoom:
+		case constant.Publish2Group:
 			// TODO: get all chatroom users
 		}
 		if len(userIDs) == 0 {
@@ -114,7 +120,7 @@ func (s *serviceStruct) ReadMsgs(ctx context.Context, userID int64,
 	return msgMap, userMsgs[len(userMsgs)-1].MsgID, nil
 }
 
-func (s *serviceStruct) GetChatMsgs(ctx context.Context, userID int64, chatType model.RoomType,
+func (s *serviceStruct) GetChatMsgs(ctx context.Context, userID int64, chatType constant.PublishType,
 	pageInfo *PagerConfig) ([]model.ChatMsg, int64, error) {
 	funcName := "GetChatMsgs"
 	msgs, err := s.dalClient.GetMessageContent(dal.DB, userID, pageInfo.StartMsgID, pageInfo.Limit)

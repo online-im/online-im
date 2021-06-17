@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"strconv"
+
 	gostNet "github.com/dubbogo/gost/net"
 	"github.com/glory-go/glory/config"
 	ghttp "github.com/glory-go/glory/http"
@@ -14,7 +16,6 @@ import (
 	"github.com/online-im/online-im/internal/redis_client"
 	pconst "github.com/online-im/online-im/pkg/constant"
 	"github.com/online-im/online-im/pkg/message"
-	"strconv"
 )
 
 var LocalIP string
@@ -59,7 +60,7 @@ func OnlineHandler(c *ghttp.GRegisterWSController) {
 		switch msg.Type {
 		case pconst.CoreMessageType_Message:
 			// publish the given core message to other users
-			if err := publisher.IMPublisher.Publish(&msg.MessagePayload); err != nil {
+			if err := publisher.IMPublisher.Publish(c.R.Context(), &msg.MessagePayload); err != nil {
 				ierror.SendError(err, fromID)
 			}
 		case pconst.CoreMessageType_Close:
