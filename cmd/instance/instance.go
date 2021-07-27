@@ -20,7 +20,7 @@ import (
 )
 
 func main() {
-	mode := "pro"
+	mode := "dev"
 	if len(os.Args) > 1 {
 		mode = os.Args[1]
 	}
